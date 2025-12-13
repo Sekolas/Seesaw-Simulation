@@ -11,8 +11,15 @@ const pauseBtn = document.getElementById('pause-btn');
 const PLANK_WIDTH = 600;
 let objects = [];
 let nextWeight = 0;
+let nextColor = '';
 let activityHistory = [];
 let isPause = false;
+
+const COLORS = [
+    '#e74c3c', '#8e44ad', '#3498db', '#1abc9c', '#f1c40f',
+    '#d35400', '#c0392b', '#16a085', '#2980b9', '#27ae60',
+    '#f39c12', '#9b59b6', '#2c3e50', '#e67e22', '#e84393'
+];
 
 window.addEventListener('load', function() {
     createNextWeight();
@@ -57,12 +64,18 @@ function pushHistoryEntry(weight, position, isRestoring) {
     }
 }
 
+function getRandomColor() {
+    return COLORS[Math.floor(Math.random() * COLORS.length)];
+}
+
 function createNextWeight() {
     nextWeight = getRandomWeight(1, 10);
+    nextColor = getRandomColor();
     nextWeightDisplay.innerText = nextWeight + ' kg';
+    nextWeightDisplay.style.backgroundColor = nextColor;
 
     weightPreviewDisplay.innerText = nextWeight + 'kg';
-    weightPreviewDisplay.style.backgroundColor = '#3498db';
+    weightPreviewDisplay.style.backgroundColor = nextColor;
 }
 
 function createObjectElement(weight, distance, color, fromStorage) {
@@ -135,7 +148,8 @@ plank.addEventListener('click', function(event) {
     var distanceFromPivot = event.clientX - pivotX;
 
     var weight = nextWeight;
-    createObjectElement(weight, distanceFromPivot, '#3498db');
+    var color = nextColor;
+    createObjectElement(weight, distanceFromPivot, color);
     updateSimulation();
     pushHistoryEntry(weight, distanceFromPivot);
     createNextWeight();
