@@ -1,13 +1,18 @@
 const plank = document.getElementById('plank');
+const leftTotalWeightDisplay = document.getElementById('left-total-weight');
+const rightTotalWeightDisplay = document.getElementById('right-total-weight');
+const nextWeightDisplay = document.getElementById('next-weight');
+const angleDisplay = document.getElementById('angle');
 const resetBtn = document.getElementById('reset-btn');
 
 const PLANK_WIDTH = 600;
 let objects = [];
+let nextWeight = 0;
 
-// load saved state on startup
 window.addEventListener('load', function() {
-    var savedData = localStorage.getItem('seesawStatus');
+    createNextWeight();
 
+    var savedData = localStorage.getItem('seesawStatus');
     if (savedData) {
         var savedObjects = JSON.parse(savedData);
         savedObjects.forEach(function(obj) {
@@ -16,6 +21,15 @@ window.addEventListener('load', function() {
         updateSimulation();
     }
 });
+
+function getRandomWeight(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function createNextWeight() {
+    nextWeight = getRandomWeight(1, 10);
+    nextWeightDisplay.innerText = nextWeight + ' kg';
+}
 
 function createObjectElement(weight, distance, color, fromStorage) {
     var weightDiv = document.createElement('div');
@@ -60,6 +74,10 @@ function updateSimulation() {
     if (angle < -30) angle = -30;
 
     plank.style.transform = 'rotate(' + angle + 'deg)';
+    angleDisplay.innerText = Math.round(angle) + '°';
+
+    leftTotalWeightDisplay.innerText = leftTotalWeight + ' kg';
+    rightTotalWeightDisplay.innerText = rightTotalWeight + ' kg';
 
     saveStatus();
 }
@@ -80,22 +98,23 @@ plank.addEventListener('click', function(event) {
     var pivotX = rect.left + rect.width / 2;
     var distanceFromPivot = event.clientX - pivotX;
 
-    var weight = Math.floor(Math.random() * 10) + 1;
-
+    var weight = nextWeight;
     createObjectElement(weight, distanceFromPivot, '#3498db');
     updateSimulation();
+    createNextWeight();
 });
 
-// reset everything
 resetBtn.addEventListener('click', function() {
     objects = [];
 
     var weights = document.querySelectorAll('.weight');
-    weights.forEach(function(el) {
-        el.remove();
-    });
+    weights.forEach(function(el) { el.remove(); });
 
     localStorage.removeItem('seesawStatus');
-
     plank.style.transform = 'rotate(0deg)';
+    leftTotalWeightDisplay.innerText = '0 kg';
+    rightTotalWeightDisplay.innerText = '0 kg';
+    angleDisplay.innerText = '0°';
+
+    createNextWeight();
 });

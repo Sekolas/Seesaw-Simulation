@@ -126,3 +126,58 @@ button:active {
     justify-content: center;
     gap: 11px;
 }
+
+#infos {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 600px;
+    margin: 20px auto;
+    padding: 15px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.stats {
+    text-align: center;
+}
+
+.stats h3 {
+    font-size: 14px;
+    color: #7f8c8d;
+    margin-bottom: 5px;
+}
+
+.stat-box span {
+    font-size: 18px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.center-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    background-color: #f0f4f8;
+    padding: 10px 20px;
+    border-radius: 6px;
+}
+
+.stat-item {
+    font-size: 16px;
+    color: #34495e;
+}
+
+.badge {
+    display: inline-block;
+    padding: 3px 9px;
+    background-color: #3498db;
+    color: white;
+    border-radius: 9px;
+    font-weight: bold;
+    min-width: 38px;
+    text-align: center;
+}
