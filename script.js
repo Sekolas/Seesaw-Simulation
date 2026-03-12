@@ -1,9 +1,23 @@
 const plank = document.getElementById('plank');
+const resetBtn = document.getElementById('reset-btn');
 
 const PLANK_WIDTH = 600;
 let objects = [];
 
-function createObjectElement(weight, distance, color) {
+// load saved state on startup
+window.addEventListener('load', function() {
+    var savedData = localStorage.getItem('seesawStatus');
+
+    if (savedData) {
+        var savedObjects = JSON.parse(savedData);
+        savedObjects.forEach(function(obj) {
+            createObjectElement(obj.weight, obj.position, obj.color, true);
+        });
+        updateSimulation();
+    }
+});
+
+function createObjectElement(weight, distance, color, fromStorage) {
     var weightDiv = document.createElement('div');
     weightDiv.classList.add('weight');
     weightDiv.innerText = weight + 'kg';
@@ -22,7 +36,6 @@ function createObjectElement(weight, distance, color) {
     });
 }
 
-// torque calculation
 function updateSimulation() {
     var leftTorque = 0;
     var rightTorque = 0;
@@ -42,24 +55,47 @@ function updateSimulation() {
         }
     });
 
-    // angle from torque difference, clamped to 30 deg
     var angle = (rightTorque - leftTorque) / 10;
     if (angle > 30) angle = 30;
     if (angle < -30) angle = -30;
 
     plank.style.transform = 'rotate(' + angle + 'deg)';
 
-    console.log('left:', leftTotalWeight + 'kg', 'right:', rightTotalWeight + 'kg', 'angle:', Math.round(angle));
+    saveStatus();
+}
+
+function saveStatus() {
+    var statusToSave = objects.map(function(obj) {
+        return {
+            weight: obj.weight,
+            position: obj.position,
+            color: obj.color
+        };
+    });
+    localStorage.setItem('seesawStatus', JSON.stringify(statusToSave));
 }
 
 plank.addEventListener('click', function(event) {
     var rect = plank.getBoundingClientRect();
     var pivotX = rect.left + rect.width / 2;
-    var clickX = event.clientX;
-    var distanceFromPivot = clickX - pivotX;
+    var distanceFromPivot = event.clientX - pivotX;
 
     var weight = Math.floor(Math.random() * 10) + 1;
 
     createObjectElement(weight, distanceFromPivot, '#3498db');
     updateSimulation();
+});
+
+// reset everything
+resetBtn.addEventListener('click', function() {
+    objects = [];
+
+    var weights = document.querySelectorAll('.weight');
+    weights.forEach(function(el) {
+        el.remove();
+    });
+
+    localStorage.removeItem('seesawStatus');
+
+    plank.style.transform = 'rotate(0deg)';
 });
