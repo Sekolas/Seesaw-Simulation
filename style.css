@@ -181,3 +181,30 @@ button:active {
     min-width: 38px;
     text-align: center;
 }
+
+#weight-preview {
+    display: none;
+    position: absolute;
+    opacity: 0.6;
+    bottom: 150px;
+    pointer-events: none;
+    z-index: 10;
+    transition: left 0.05s linear;
+}
+
+#weight-preview::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 150px;
+    background: repeating-linear-gradient(
+        to bottom,
+        #7f8c8d 0,
+        #7f8c8d 5px,
+        transparent 5px,
+        transparent 10px
+    );
+}

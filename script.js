@@ -4,6 +4,7 @@ const rightTotalWeightDisplay = document.getElementById('right-total-weight');
 const nextWeightDisplay = document.getElementById('next-weight');
 const angleDisplay = document.getElementById('angle');
 const resetBtn = document.getElementById('reset-btn');
+const weightPreviewDisplay = document.getElementById('weight-preview');
 
 const PLANK_WIDTH = 600;
 let objects = [];
@@ -29,6 +30,9 @@ function getRandomWeight(min, max) {
 function createNextWeight() {
     nextWeight = getRandomWeight(1, 10);
     nextWeightDisplay.innerText = nextWeight + ' kg';
+
+    weightPreviewDisplay.innerText = nextWeight + 'kg';
+    weightPreviewDisplay.style.backgroundColor = '#3498db';
 }
 
 function createObjectElement(weight, distance, color, fromStorage) {
@@ -104,11 +108,28 @@ plank.addEventListener('click', function(event) {
     createNextWeight();
 });
 
+// preview follows mouse on plank
+plank.addEventListener('mousemove', function(event) {
+    var rect = plank.getBoundingClientRect();
+    var x = event.clientX - rect.left;
+
+    weightPreviewDisplay.style.display = 'flex';
+    weightPreviewDisplay.style.left = x + 'px';
+});
+
+plank.addEventListener('mouseleave', function() {
+    weightPreviewDisplay.style.display = 'none';
+});
+
 resetBtn.addEventListener('click', function() {
     objects = [];
 
     var weights = document.querySelectorAll('.weight');
-    weights.forEach(function(el) { el.remove(); });
+    weights.forEach(function(el) {
+        if (el.id !== 'weight-preview') {
+            el.remove();
+        }
+    });
 
     localStorage.removeItem('seesawStatus');
     plank.style.transform = 'rotate(0deg)';
