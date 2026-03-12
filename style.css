@@ -208,3 +208,47 @@ button:active {
         transparent 10px
     );
 }
+
+#history-wrapper {
+    width: 600px;
+    margin: 18px auto;
+    text-align: left;
+}
+
+#history-wrapper h3 {
+    font-size: 15px;
+    color: #2c3e50;
+    margin-bottom: 8px;
+    padding-left: 5px;
+}
+
+#history-container {
+    height: 150px;
+    overflow-y: auto;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 10px;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 13px;
+}
+
+.history-entry {
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+    color: #555;
+    animation: fadeIn 0.3s ease-in;
+}
+
+.placeholder {
+    color: #aaa;
+    font-style: italic;
+    text-align: center;
+    margin-top: 48px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}

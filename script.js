@@ -5,13 +5,23 @@ const nextWeightDisplay = document.getElementById('next-weight');
 const angleDisplay = document.getElementById('angle');
 const resetBtn = document.getElementById('reset-btn');
 const weightPreviewDisplay = document.getElementById('weight-preview');
+const historyContainer = document.getElementById('history-container');
 
 const PLANK_WIDTH = 600;
 let objects = [];
 let nextWeight = 0;
+let activityHistory = [];
 
 window.addEventListener('load', function() {
     createNextWeight();
+
+    var savedHistory = localStorage.getItem('seesawHistory');
+    if (savedHistory) {
+        activityHistory = JSON.parse(savedHistory);
+        activityHistory.forEach(function(log) {
+            pushHistoryEntry(log.weight, log.position, true);
+        });
+    }
 
     var savedData = localStorage.getItem('seesawStatus');
     if (savedData) {
@@ -25,6 +35,24 @@ window.addEventListener('load', function() {
 
 function getRandomWeight(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function pushHistoryEntry(weight, position, isRestoring) {
+    var placeholder = document.querySelector('.placeholder');
+    if (placeholder) placeholder.remove();
+
+    var side = position < 0 ? 'left' : 'right';
+    var distance = Math.abs(position).toFixed(0);
+
+    var entry = document.createElement('div');
+    entry.classList.add('history-entry');
+    entry.innerText = ' ' + weight + 'kg dropped on ' + side + ' side at ' + distance + 'px from pivot';
+    historyContainer.prepend(entry);
+
+    if (!isRestoring) {
+        activityHistory.push({ weight: weight, position: position });
+        localStorage.setItem('seesawHistory', JSON.stringify(activityHistory));
+    }
 }
 
 function createNextWeight() {
@@ -105,6 +133,7 @@ plank.addEventListener('click', function(event) {
     var weight = nextWeight;
     createObjectElement(weight, distanceFromPivot, '#3498db');
     updateSimulation();
+    pushHistoryEntry(weight, distanceFromPivot);
     createNextWeight();
 });
 
@@ -136,6 +165,10 @@ resetBtn.addEventListener('click', function() {
     leftTotalWeightDisplay.innerText = '0 kg';
     rightTotalWeightDisplay.innerText = '0 kg';
     angleDisplay.innerText = '0°';
+
+    activityHistory = [];
+    localStorage.removeItem('seesawHistory');
+    historyContainer.innerHTML = '<div class="history-entry placeholder">No action has been taken.</div>';
 
     createNextWeight();
 });
