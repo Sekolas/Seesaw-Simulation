@@ -6,11 +6,13 @@ const angleDisplay = document.getElementById('angle');
 const resetBtn = document.getElementById('reset-btn');
 const weightPreviewDisplay = document.getElementById('weight-preview');
 const historyContainer = document.getElementById('history-container');
+const pauseBtn = document.getElementById('pause-btn');
 
 const PLANK_WIDTH = 600;
 let objects = [];
 let nextWeight = 0;
 let activityHistory = [];
+let isPause = false;
 
 window.addEventListener('load', function() {
     createNextWeight();
@@ -105,8 +107,10 @@ function updateSimulation() {
     if (angle > 30) angle = 30;
     if (angle < -30) angle = -30;
 
-    plank.style.transform = 'rotate(' + angle + 'deg)';
-    angleDisplay.innerText = Math.round(angle) + '°';
+    if (!isPause) {
+        plank.style.transform = 'rotate(' + angle + 'deg)';
+        angleDisplay.innerText = Math.round(angle) + '°';
+    }
 
     leftTotalWeightDisplay.innerText = leftTotalWeight + ' kg';
     rightTotalWeightDisplay.innerText = rightTotalWeight + ' kg';
@@ -170,5 +174,24 @@ resetBtn.addEventListener('click', function() {
     localStorage.removeItem('seesawHistory');
     historyContainer.innerHTML = '<div class="history-entry placeholder">No action has been taken.</div>';
 
+    isPause = false;
+    pauseBtn.innerText = 'Pause Mechanism';
+    pauseBtn.classList.remove('resume-mode');
+
     createNextWeight();
+});
+
+pauseBtn.addEventListener('click', function() {
+    isPause = !isPause;
+
+    if (isPause) {
+        pauseBtn.innerText = 'Resume Mechanism';
+        pauseBtn.classList.add('resume-mode');
+        plank.style.transform = 'rotate(0deg)';
+        angleDisplay.innerText = '0° (Paused)';
+    } else {
+        pauseBtn.innerText = 'Pause Mechanism';
+        pauseBtn.classList.remove('resume-mode');
+        updateSimulation();
+    }
 });

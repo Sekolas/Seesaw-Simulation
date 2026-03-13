@@ -120,6 +120,17 @@ button:active {
     background-color: #c0392b;
 }
 
+#pause-btn {
+    background-color: #f39c12;
+    min-width: 80px;
+}
+#pause-btn:hover {
+    background-color: #d68910;
+}
+#pause-btn.resume-mode {
+    background-color: #27ae60;
+}
+
 .buttons {
     margin-top: 9px;
     display: flex;
