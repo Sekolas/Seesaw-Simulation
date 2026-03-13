@@ -7,6 +7,7 @@ const resetBtn = document.getElementById('reset-btn');
 const weightPreviewDisplay = document.getElementById('weight-preview');
 const historyContainer = document.getElementById('history-container');
 const pauseBtn = document.getElementById('pause-btn');
+const soundEffect = document.getElementById('sound-effect');
 
 const PLANK_WIDTH = 600;
 let objects = [];
@@ -22,6 +23,7 @@ const COLORS = [
 ];
 
 window.addEventListener('load', function() {
+    createScaler();
     createNextWeight();
 
     var savedHistory = localStorage.getItem('seesawHistory');
@@ -95,6 +97,43 @@ function createObjectElement(weight, distance, color, fromStorage) {
         color: color || '#3498db',
         element: weightDiv
     });
+
+    if (!fromStorage) {
+        playSoundEffect();
+    }
+}
+
+function playSoundEffect() {
+    soundEffect.currentTime = 0;
+    soundEffect.play().catch(function(err) {
+        console.log(err);
+    });
+}
+
+function createScaler() {
+    var scaleContainer = document.getElementById('scale');
+
+    for (var i = -250; i <= 250; i += 50) {
+        if (i === 0) continue;
+
+        var line = document.createElement('div');
+        line.classList.add('line');
+        line.style.left = (PLANK_WIDTH / 2) + i + 'px';
+        scaleContainer.appendChild(line);
+
+        var label = document.createElement('div');
+        label.classList.add('line-label');
+        label.innerText = Math.abs(i);
+        label.style.left = (PLANK_WIDTH / 2) + i + 'px';
+
+        if (i % 100 === 0) {
+            label.style.fontWeight = 'bold';
+            label.style.color = '#34495e';
+            line.style.backgroundColor = 'rgba(255, 255, 255, 0.6)';
+        }
+
+        scaleContainer.appendChild(label);
+    }
 }
 
 function updateSimulation() {
